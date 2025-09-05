@@ -162,8 +162,8 @@
       "name": "Set Instance TTL 30D",
       "credentials": {
         "redis": {
-          "id": "LK9rDtqYoR5e5wVE",
-          "name": "Conector Chatwoot | GFSD | DB10"
+          "id": "30WMRrNcmjIGSU6n",
+          "name": "DB 10 - Miscelaneous"
         }
       }
     },
@@ -185,8 +185,8 @@
       "name": "Set Instance TTL 30D1",
       "credentials": {
         "redis": {
-          "id": "LK9rDtqYoR5e5wVE",
-          "name": "Conector Chatwoot | GFSD | DB10"
+          "id": "30WMRrNcmjIGSU6n",
+          "name": "DB 10 - Miscelaneous"
         }
       }
     },
@@ -205,8 +205,8 @@
       "name": "Delete Instance Key",
       "credentials": {
         "redis": {
-          "id": "LK9rDtqYoR5e5wVE",
-          "name": "Conector Chatwoot | GFSD | DB10"
+          "id": "30WMRrNcmjIGSU6n",
+          "name": "DB 10 - Miscelaneous"
         }
       }
     },
@@ -227,8 +227,8 @@
       "name": "Get Instance Chatwoot Data",
       "credentials": {
         "redis": {
-          "id": "LK9rDtqYoR5e5wVE",
-          "name": "Conector Chatwoot | GFSD | DB10"
+          "id": "30WMRrNcmjIGSU6n",
+          "name": "DB 10 - Miscelaneous"
         }
       }
     },
@@ -414,8 +414,8 @@
       "name": "Get Cache Lock Inbox Id Change",
       "credentials": {
         "redis": {
-          "id": "LK9rDtqYoR5e5wVE",
-          "name": "Conector Chatwoot | GFSD | DB10"
+          "id": "30WMRrNcmjIGSU6n",
+          "name": "DB 10 - Miscelaneous"
         }
       }
     },
@@ -437,8 +437,8 @@
       "name": "SET Cache Lock Inbox Id Change 6s",
       "credentials": {
         "redis": {
-          "id": "LK9rDtqYoR5e5wVE",
-          "name": "Conector Chatwoot | GFSD | DB10"
+          "id": "30WMRrNcmjIGSU6n",
+          "name": "DB 10 - Miscelaneous"
         }
       }
     },
@@ -660,8 +660,8 @@
       "name": "Delete Instance Key (ItemSS!)",
       "credentials": {
         "redis": {
-          "id": "LK9rDtqYoR5e5wVE",
-          "name": "Conector Chatwoot | GFSD | DB10"
+          "id": "30WMRrNcmjIGSU6n",
+          "name": "DB 10 - Miscelaneous"
         }
       }
     },
@@ -840,8 +840,8 @@
       "name": "SET Cache Lock Inbox Id Change 6s1",
       "credentials": {
         "redis": {
-          "id": "LK9rDtqYoR5e5wVE",
-          "name": "Conector Chatwoot | GFSD | DB10"
+          "id": "30WMRrNcmjIGSU6n",
+          "name": "DB 10 - Miscelaneous"
         }
       }
     },
@@ -1379,8 +1379,8 @@
       "name": "Cache Message As Delivered1",
       "credentials": {
         "redis": {
-          "id": "LK9rDtqYoR5e5wVE",
-          "name": "Conector Chatwoot | GFSD | DB10"
+          "id": "30WMRrNcmjIGSU6n",
+          "name": "DB 10 - Miscelaneous"
         }
       }
     },
@@ -1854,8 +1854,8 @@
       "name": "Get cached contactCvs",
       "credentials": {
         "redis": {
-          "id": "LK9rDtqYoR5e5wVE",
-          "name": "Conector Chatwoot | GFSD | DB10"
+          "id": "30WMRrNcmjIGSU6n",
+          "name": "DB 10 - Miscelaneous"
         }
       }
     },
@@ -1890,8 +1890,8 @@
       "name": "Cache contactCvs",
       "credentials": {
         "redis": {
-          "id": "LK9rDtqYoR5e5wVE",
-          "name": "Conector Chatwoot | GFSD | DB10"
+          "id": "30WMRrNcmjIGSU6n",
+          "name": "DB 10 - Miscelaneous"
         }
       }
     },
@@ -1911,8 +1911,8 @@
       "name": "Cache contactCvs1",
       "credentials": {
         "redis": {
-          "id": "LK9rDtqYoR5e5wVE",
-          "name": "Conector Chatwoot | GFSD | DB10"
+          "id": "30WMRrNcmjIGSU6n",
+          "name": "DB 10 - Miscelaneous"
         }
       }
     },
@@ -1934,8 +1934,8 @@
       "name": "Cache message (As Delivered!)",
       "credentials": {
         "redis": {
-          "id": "LK9rDtqYoR5e5wVE",
-          "name": "Conector Chatwoot | GFSD | DB10"
+          "id": "30WMRrNcmjIGSU6n",
+          "name": "DB 10 - Miscelaneous"
         }
       }
     },
@@ -2323,8 +2323,8 @@
       "name": "Delete Inbox Token Cache",
       "credentials": {
         "redis": {
-          "id": "LK9rDtqYoR5e5wVE",
-          "name": "Conector Chatwoot | GFSD | DB10"
+          "id": "30WMRrNcmjIGSU6n",
+          "name": "DB 10 - Miscelaneous"
         }
       }
     },
@@ -2582,8 +2582,8 @@
       "name": "Cache MESSAGE TYPE",
       "credentials": {
         "redis": {
-          "id": "LK9rDtqYoR5e5wVE",
-          "name": "Conector Chatwoot | GFSD | DB10"
+          "id": "30WMRrNcmjIGSU6n",
+          "name": "DB 10 - Miscelaneous"
         }
       }
     },
@@ -2933,8 +2933,8 @@
       "name": "Nml - contactCvs to cache2",
       "credentials": {
         "redis": {
-          "id": "LK9rDtqYoR5e5wVE",
-          "name": "Conector Chatwoot | GFSD | DB10"
+          "id": "30WMRrNcmjIGSU6n",
+          "name": "DB 10 - Miscelaneous"
         }
       }
     },

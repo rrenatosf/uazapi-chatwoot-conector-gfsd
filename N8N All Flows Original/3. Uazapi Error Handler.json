@@ -1,0 +1,860 @@
+{
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        592,
+        384
+      ],
+      "id": "3367671c-fa15-4dd8-a4cf-92c802d32698",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        3200,
+        304
+      ],
+      "id": "0e84a4e6-89f7-458a-b68b-7ebd13d4f5bd",
+      "name": "Wait 10s",
+      "webhookId": "17e2af44-bb62-4c54-b689-341e0a9ad8ed"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO message_map (stanza_id, cw_message_id, installation, cw_account_id, cw_inbox_id, cw_conversation_id)\nVALUES (\n  'MID:{{ $('Random stanzaId').item.json.randomHex }}',\n    {{ $('Process Exec Payload').item.json.payload.extra.messageId }},\n    '{{ $('Process Exec Payload').item.json.payload.extra.installationUrl }}',\n    {{ $('Process Exec Payload').item.json.payload.extra.accountId }},\n    {{ $('Process Exec Payload').item.json.payload.extra.contac_inbox.inbox_id }},\n    {{ $('Process Exec Payload').item.json.payload.extra.conversationId }}\n);",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1760,
+        256
+      ],
+      "id": "e6aad385-055f-414c-8368-0dbcc261c48b",
+      "name": "Map Message Ids",
+      "credentials": {
+        "postgres": {
+          "id": "L9p4mnsgiaYfT5Pi",
+          "name": "yib_api_conector [postgres]"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Função simples para gerar string hexadecimal aleatória\nfunction generateRandomHex(length = 20) {\n  const characters = '0123456789ABCDEF';\n  let result = '';\n  \n  for (let i = 0; i < length; i++) {\n    const randomIndex = Math.floor(Math.random() * characters.length);\n    result += characters[randomIndex];\n  }\n  \n  return result;\n}\n\n// Gera a string aleatória (20 caracteres como no exemplo)\nconst randomHex = generateRandomHex(20);\n\nreturn {randomHex};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1488,
+        256
+      ],
+      "id": "92d8ebd4-53dc-4809-85ae-1ae295feda75",
+      "name": "Random stanzaId"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5ae48456-86f1-4013-b4bb-498d9cbe7898",
+              "name": "chatId",
+              "value": "={{ $(\"Process Exec Payload\").item.json.payload.toSend.body.conversation.meta.sender.identifier }}",
+              "type": "string"
+            },
+            {
+              "id": "26e098a5-91ec-472b-aa70-20f1b6581e4c",
+              "name": "stanzaId",
+              "value": "={{ $('Mrg - instanzaId').item.json.stanzaId }}",
+              "type": "string"
+            },
+            {
+              "id": "8106b7f1-9201-4245-b954-ce7a5e07761a",
+              "name": "text",
+              "value": "={{ $('Process Exec Payload').item.json.message }}",
+              "type": "string"
+            },
+            {
+              "id": "a37243cc-c4b4-426c-97a1-896b465883eb",
+              "name": "instanceToken",
+              "value": "={{ $('Process Exec Payload').item.json.payload.instanceToken }}",
+              "type": "string"
+            },
+            {
+              "id": "39908a8d-102b-480d-807b-aa84f760bb8f",
+              "name": "extra",
+              "value": "={{ $('Process Exec Payload').item.json.payload.extra }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2192,
+        384
+      ],
+      "id": "21efb4a1-29c5-4e25-a694-6356b88f4e99",
+      "name": "Data System Message (ERROR)"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Process Exec Payload').item.json.action }}",
+                    "rightValue": "RETRY",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "aa3a7da7-4200-4bc7-843e-e76690760b8a"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "retry"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "f02825e4-d4a5-464b-84f2-e5c6a12e52eb",
+                    "leftValue": "={{ $('Process Exec Payload').item.json.action }}",
+                    "rightValue": "FAIL",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "fail"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        1008,
+        368
+      ],
+      "id": "20bd3b8b-1792-4ef5-9423-0a8a55b43f81",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const { createClient } = require('redis');\n\n// O Error Trigger nos dá o ID da execução que falhou\nconst executionId = $('Error Trigger').item.json.execution.id;\nif (!executionId) {\n  return [{ json: { action: 'NO_EXECUTION_ID' } }];\n}\n\nconst client = createClient({\n  socket: { host: 'redis', port: 6379 },\n  database: 10\n});\n\nlet output = {};\n\ntry {\n  await client.connect();\n\n  // 1. Construir e acessar a fila de processamento única\n  const processingQueueKey = `processing:exec:${executionId}`;\n  const contextKey = `context:exec:${executionId}`;\n  // Buscar as duas informações em paralelo para mais eficiência\n  const [failedPayloadString, contextString] = await Promise.all([\n    client.lPop(processingQueueKey), //\"Abrimos\" o payload para extrair seus dados necessários da instância pra gerar a mensagem de erro.\n    client.get(contextKey) //Aqui guardamos o token separadinho (já que só o conseguimos no meio do flow), pra montar o payload necessário (lá buscamos os dados do chatwoot com base no token, é claro).\n  ]);\n  \n  if (!failedPayloadString) {\n    return [{ json: { action: 'EMPITY_PAYLOAD' } }]; //Por algum motivo esse flow foi chamado com a fila vazia (observei quando o primeiro code do MAIN Chatwoot Receptor falha :p)\n  }\n\n  // Se o contexto não for encontrado\n  const context = contextString ? JSON.parse(contextString) : null;\n  if (!context) {\n    throw new Error(\"Context not found - cannot proceed without instanceToken\");\n  }\n  \n  // 2. Extrair informações cruciais do payload para construir as outras chaves\n  const payload = JSON.parse(failedPayloadString);\n  // Extrarir dados do payload para formar as outras chaves únicas\n  const accountId = payload.extra.accountId;\n  const inboxId = payload.extra.contac_inbox.inbox_id;\n  const senderId = payload.toSend.body.conversation.meta.sender.identifier.split(\"@\")[0];\n  const messageId = String(payload.extra.messageId);\n\n  //Formar chaves únicas\n  //const queueKey = `cw_to_uz_queue:acc${accountId}:i${inboxId}:${senderId}`;\n  //const lockKey = `lock:cw_to_uz_process:acc${accountId}:i${inboxId}:${senderId}`;\n  // 👆🏼 JÁ ADICINEI COMO BASE NO PAYLOA NO ROUTER!!!\n  const queueKey = payload.queueKey;\n  const retriesKey = `retries:acc${accountId}:i${inboxId}:${senderId}`;\n  //const dlqKey = `dlq:acc${accountId}:i${inboxId}:${senderId}`;\n\n  // *** UPGRADE: VERIFICAR O TAMANHO DA FILA ANTES DE QUALQUER AÇÃO ***\n  const remainingCount = await client.lLen(queueKey);\n\n  // 3. Incrementar e obter o contador de tentativas\n  const attempt = await client.hIncrBy(retriesKey, messageId, 1);\n\n  // *** A SUA SUGESTÃO EM AÇÃO ***\n  // Juntando o userToken ao payload com o spread operator.\n  const finalPayload = { ...context, ...payload };\n  \n  // Prepara os dados de saída\n  output = { \n    action: '', \n    payload: finalPayload, \n    attempt: attempt\n    //queueKey: queueKey, JÁ COMO BASE NO PAYLOAD!!! \n    //lockKey: lockKey\n  };\n\n  // 4. Tomar a decisão\n  if (attempt < 3) { // 2ª ou 3ª tentativa (a 1ª já foi a primeira execução do MAIN receptor)\n    output.action = 'RETRY';\n    \n    // *** UPGRADE: MENSAGEM DINÂMICA PARA RETRY ***\n    if (remainingCount === 1) {\n      output.message = `🚨 Este envio falhou (a mensagem seguinte está na fila). Faremos a tentativa ${attempt + 1} (de 3) em 10 segundos. Para cancelar e limpar a fila digite \\`..limpar\\`.`;\n    } else if (remainingCount > 1) {\n      output.message = `🚨 Este envio falhou (as próximas ${remainingCount} mensagens estão na fila). Faremos a tentativa ${attempt + 1} (de 3) em 10 segundos. Para cancelar e limpar a fila digite \\`..limpar\\`.`;\n    } else {\n      output.message = `🚨 Este envio falhou, faremos a tentativa ${attempt + 1} (de 3) em 10 segundos`;\n    }\n\n    // *** UPGRADE FINAL: Adicionar o número da tentativa ao payload antes de reenfileirar ***\n    payload.attempt = attempt; // Adicionamos a propriedade 'attempt' ao objeto payload\n    const payloadStringToRequeue = JSON.stringify(payload); // Convertemos o objeto MODIFICADO de volta para string\n\n    await client.lPush(queueKey, payloadStringToRequeue); // 👈🏼👈🏼👈🏼 Devolve a MENSAGEM MODIFICADA para a FRENTE da fila principal!\n\n  } else { // 4ª vez aqui já é falha permanente\n    output.action = 'FAIL'; //Nem usamos isso no Switch, porque seguimos igual. Só vamos mudar a mensagem. Mas engatilharemos os mesmos flows. A diferença é que não reenfileiramos a mensagem.\n    \n    // *** UPGRADE: MENSAGEM DINÂMICA PARA FAIL ***\n    if (remainingCount === 1) {\n      output.message = `A terceira tentativa também falhou. A mensagem não foi enviada! Tentaremos enviar sua próxima mensagem em 10s, para cancelar digite \\`..limpar\\`.`;\n    } else if (remainingCount > 1) {\n      output.message = `A terceira tentativa também falhou. A mensagem não foi enviada! Tentaremos enviar sua próxima mensagem em 10s, para cancelar e limpar a fila (${remainingCount} mensagens) digite \\`..limpar\\`.`;\n    } else {\n      output.message = `A terceira tentativa também falhou. Mensagem não enviada!`;\n    }\n\n    // Move para a Dead-Letter Queue\n    //await client.lPush(dlqKey, failedPayloadString); Não precisamos de dlq! Bobagem visto que é coisa do agente.\n    // Limpa o contador para não interferir em futuras mensagens iguais ??? Não faz sentido. Acho que é só limpeza.\n    await client.hDel(retriesKey, messageId);\n  }\n\n  await client.del(contextKey); // Chave efêmera da execução passada. Vamos reengatilhar e pegar novamente.\n  // A processingQueueKey (também efêmera) já foi esvaziada com o LPOP no comecinho! \n\n} catch (error) {\n  throw error;\n} finally {\n  if (client.isOpen) {\n    await client.quit();\n  }\n}\n\nreturn [{ json: output }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        384
+      ],
+      "id": "b4727718-aa41-425e-82a1-64f8103b30ad",
+      "name": "Process Exec Payload"
+    },
+    {
+      "parameters": {
+        "jsCode": "//var systemMessageType = $('Data System Message (ERROR)').item.json.systemMessageType;\nvar text = $('Data System Message (ERROR)').item.json.text;\nvar chatId = $('Data System Message (ERROR)').item.json.chatId;\nvar stanzaId = $('Data System Message (ERROR)').item.json.stanzaId.replace(/^MID:/, ''); //Na segunda execução, quando ao invés de gerar recuperamos a MESMA mensagem do DB (para marcá-la novamente com erro), ela já vem com \"MID:\" (é assim que salvamos), mas temos que remover porque precisamos fazer o evento chegar no MAIN receptor como outro evneto referente a mesma mensagem, então precisamos simular o evento certinho novamente, sem mid! Afinal, o Whatsapp não gera eventos com mid kkkkk, então obiviamente o fluxo não está preparado pra lidar com isso. E não é ele que temos que ajustar. É esse daqui. \nvar instanceToken = $('Data System Message (ERROR)').item.json.instanceToken;\nvar extra = $('Data System Message (ERROR)').item.json.extra; //Pra conseguir alterar status das mensagens com erro\n\nvar data = {\n  body: {\n    \"EventType\": \"messages\",\n    \"message\": {\n      \"chatid\": chatId,\n      \"content\": {\n        \"text\": \"**SYSTEM:** ...\",\n        \"contextInfo\": {\n          \"stanzaID\": stanzaId, // Agora já limpo diretamente na atribuição\n          \"participant\": \"\",\n          \"quotedMessage\": {\n            \"conversation\": \"\"\n          }\n        }\n      },\n      \"fromMe\": true,\n      \"isGroup\": false,\n      \"messageid\": \"\",\n      \"quoted\": stanzaId, // Agora já limpo diretamente na atribuição\n      \"senderName\": \"\",\n      \"source\": \"yib_sys\",\n      \"text\": `**SYSTEM:** ${text}`,\n      \"type\": \"text\",\n      \"wasSentByApi\": false\n    },\n    \"token\": instanceToken\n  },\n  \"executionMode\": \"production\",\n  \"switchProcessor\": {\n    \"eventType\": \"SYSTEM_MESSAGE_ERROR\",\n    \"discordReason\": \"\"\n  },\n  \"extra\": extra //Pra conseguir alterar status das mensagens com erro\n}\nreturn [{\n  json: data\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2400,
+        384
+      ],
+      "id": "e9a7dea8-1e0a-43b4-8e9f-09ff2ac45449",
+      "name": "System Message Build Payload (ERROR)"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ { \n  queueKey: $('Process Exec Payload').item.json.payload.queueKey, \n  lockKey: $('Process Exec Payload').item.json.payload.lockKey \n} }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2800,
+        384
+      ],
+      "id": "957db571-c120-4974-814e-9da415ad4450",
+      "name": "InputKeys (MAIN Chatwoot receptor)"
+    },
+    {
+      "parameters": {
+        "dataToSave": {
+          "values": [
+            {
+              "key": "data",
+              "value": "=Falha no item da execQueueKey: {{ $('Process Exec Payload').item.json.action }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executionData",
+      "typeVersion": 1.1,
+      "position": [
+        1264,
+        576
+      ],
+      "id": "62f5889d-d34b-49e5-bb50-ec1c1fbba2aa",
+      "name": "Exception"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "52ebacde-092f-4744-b0a3-638c86caa7fe",
+              "name": "stanzaId",
+              "value": "={{ $('Random stanzaId').isExecuted ? $('Random stanzaId').item.json.randomHex : $('Get instanzaId').item.json.stanza_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1984,
+        384
+      ],
+      "id": "de3647a8-1745-4820-b6a5-eb57adb92aef",
+      "name": "Mrg - instanzaId"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM message_map\nWHERE cw_message_id = {{ $('Process Exec Payload').item.json.payload.extra.messageId }}\nAND cw_account_id = {{ $('Process Exec Payload').item.json.payload.extra.accountId }}\nAND cw_inbox_id = {{ $('Process Exec Payload').item.json.payload.extra.contac_inbox.inbox_id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1616,
+        384
+      ],
+      "id": "e2798d8b-7653-4fb8-95c6-13daa70f20bf",
+      "name": "Get instanzaId",
+      "credentials": {
+        "postgres": {
+          "id": "L9p4mnsgiaYfT5Pi",
+          "name": "yib_api_conector [postgres]"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "PORwoJguuqvS9Qb4",
+          "mode": "list",
+          "cachedResultName": "MAIN - Uzapi receptor (TOchatwoot)"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        2608,
+        384
+      ],
+      "id": "c182d452-5f57-49aa-a636-f07f0f16b845",
+      "name": "\"MAIN Uazapi receptor\" Create Sys Message"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "DAXYAZARmSFEXuHj",
+          "mode": "list",
+          "cachedResultName": "MAIN - Chatwoot receptor (TOuazapi/contact)"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        3424,
+        400
+      ],
+      "id": "3d5b6de4-cd0b-4bb6-8b35-ccab24e3782b",
+      "name": "\"MAIN Chatwoot Receptor\" Retry!"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d0e5f7e2-6b61-4063-8c00-268d0f35c8df",
+              "leftValue": "={{ $('Process Exec Payload').item.json.attempt }}",
+              "rightValue": 1,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1264,
+        368
+      ],
+      "id": "78021c44-e073-4063-a7f7-8a230b523665",
+      "name": "First attempt?"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Process Exec Payload').item.json.action }}",
+                    "rightValue": "RETRY",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "aa3a7da7-4200-4bc7-843e-e76690760b8a"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "retry"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "f02825e4-d4a5-464b-84f2-e5c6a12e52eb",
+                    "leftValue": "={{ $('Process Exec Payload').item.json.action }}",
+                    "rightValue": "FAIL",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "fail"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "none"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        2992,
+        384
+      ],
+      "id": "b9c42eaf-8c86-435c-b1a6-1c2683bef265",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "PORwoJguuqvS9Qb4",
+          "mode": "list",
+          "cachedResultName": "MAIN - Uzapi receptor (TOchatwoot)"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        1424,
+        960
+      ],
+      "id": "8e2efac4-5595-4b89-9ad8-05a2484c997d",
+      "name": "\"MAIN Uazapi receptor\" Create Sys Message1"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        592,
+        960
+      ],
+      "id": "350f4d09-b557-4de8-8b65-8b962b21b55d",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "propertyName": "result",
+        "key": "=context:exec:{{ $('When Executed by Another Workflow').item.json.executionId }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        800,
+        960
+      ],
+      "id": "e71bf7f9-7d60-4687-ac02-1d3c624cf855",
+      "name": "Get Context Key (instanceToken)",
+      "credentials": {
+        "redis": {
+          "id": "30WMRrNcmjIGSU6n",
+          "name": "DB 10 - Miscelaneous"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5ae48456-86f1-4013-b4bb-498d9cbe7898",
+              "name": "chatId",
+              "value": "={{ $('When Executed by Another Workflow').item.json.chatId }}",
+              "type": "string"
+            },
+            {
+              "id": "26e098a5-91ec-472b-aa70-20f1b6581e4c",
+              "name": "stanzaId",
+              "value": "={{ $('When Executed by Another Workflow').item.json.stanzaId }}",
+              "type": "string"
+            },
+            {
+              "id": "8106b7f1-9201-4245-b954-ce7a5e07761a",
+              "name": "text",
+              "value": "=✅ Enviada com sucesso na tentativa {{ $('When Executed by Another Workflow').item.json.attempt + 1 }}!",
+              "type": "string"
+            },
+            {
+              "id": "a37243cc-c4b4-426c-97a1-896b465883eb",
+              "name": "instanceToken",
+              "value": "={{ $('Get Context Key (instanceToken)').item.json.result.parseJson().instanceToken }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1008,
+        960
+      ],
+      "id": "a1068c59-7030-453f-8411-dd1dfc1ad9e7",
+      "name": "Data System Message (Chat Info)"
+    },
+    {
+      "parameters": {
+        "jsCode": "//var systemMessageType = $('Data System Message (Chat Info)').item.json.systemMessageType;\nvar text = $('Data System Message (Chat Info)').item.json.text;\nvar chatId = $('Data System Message (Chat Info)').item.json.chatId;\nvar stanzaId = $('Data System Message (Chat Info)').item.json.stanzaId.replace(/^MID:/, ''); //Na segunda execução, quando ao invés de gerar recuperamos a MESMA mensagem do DB (para marcá-la novamente com erro), ela já vem com \"MID:\" (é assim que salvamos), mas temos que remover porque precisamos fazer o evento chegar no MAIN receptor como outro evneto referente a mesma mensagem, então precisamos simular o evento certinho novamente, sem mid! Afinal, o Whatsapp não gera eventos com mid kkkkk, então obiviamente o fluxo não está preparado pra lidar com isso. E não é ele que temos que ajustar. É esse daqui. \nvar instanceToken = $('Data System Message (Chat Info)').item.json.instanceToken;\n\nvar data = {\n  body: {\n    \"EventType\": \"messages\",\n    \"message\": {\n      \"chatid\": chatId,\n      \"content\": {\n        \"text\": \"**SYSTEM:** ...\",\n        \"contextInfo\": {\n          \"stanzaID\": stanzaId, // Agora já limpo diretamente na atribuição\n          \"participant\": \"\",\n          \"quotedMessage\": {\n            \"conversation\": \"\"\n          }\n        }\n      },\n      \"fromMe\": true,\n      \"isGroup\": false,\n      \"messageid\": \"\",\n      \"quoted\": stanzaId, // Agora já limpo diretamente na atribuição\n      \"senderName\": \"\",\n      \"source\": \"yib_sys\",\n      \"text\": `**SYSTEM:** ${text}`,\n      \"type\": \"text\",\n      \"wasSentByApi\": false\n    },\n    \"token\": instanceToken\n  },\n  \"executionMode\": \"production\",\n  \"switchProcessor\": {\n    \"eventType\": \"SYSTEM_MESSAGE_ERROR\",\n    \"discordReason\": \"\"\n  }\n}\nreturn [{\n  json: data\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1216,
+        960
+      ],
+      "id": "9b9f4ccf-cf75-41c8-a5ae-3515dd615dfb",
+      "name": "Data System Message (Chat Info)1"
+    }
+  ],
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Process Exec Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 10s": {
+      "main": [
+        [
+          {
+            "node": "\"MAIN Chatwoot Receptor\" Retry!",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map Message Ids": {
+      "main": [
+        [
+          {
+            "node": "Mrg - instanzaId",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Random stanzaId": {
+      "main": [
+        [
+          {
+            "node": "Map Message Ids",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data System Message (ERROR)": {
+      "main": [
+        [
+          {
+            "node": "System Message Build Payload (ERROR)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "First attempt?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "First attempt?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Exception",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Exec Payload": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "System Message Build Payload (ERROR)": {
+      "main": [
+        [
+          {
+            "node": "\"MAIN Uazapi receptor\" Create Sys Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "InputKeys (MAIN Chatwoot receptor)": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mrg - instanzaId": {
+      "main": [
+        [
+          {
+            "node": "Data System Message (ERROR)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get instanzaId": {
+      "main": [
+        [
+          {
+            "node": "Mrg - instanzaId",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "\"MAIN Uazapi receptor\" Create Sys Message": {
+      "main": [
+        [
+          {
+            "node": "InputKeys (MAIN Chatwoot receptor)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "First attempt?": {
+      "main": [
+        [
+          {
+            "node": "Random stanzaId",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get instanzaId",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Wait 10s",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait 10s",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Get Context Key (instanceToken)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Context Key (instanceToken)": {
+      "main": [
+        [
+          {
+            "node": "Data System Message (Chat Info)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data System Message (Chat Info)": {
+      "main": [
+        [
+          {
+            "node": "Data System Message (Chat Info)1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data System Message (Chat Info)1": {
+      "main": [
+        [
+          {
+            "node": "\"MAIN Uazapi receptor\" Create Sys Message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {
+    "Error Trigger": [
+      {
+        "execution": {
+          "id": "576679",
+          "url": "https://n8nwebhook.yearsinbox.com/workflow/VwuLstvzkoVWDxUK/executions/576679",
+          "error": {
+            "level": "warning",
+            "tags": {},
+            "timestamp": 1756184291933,
+            "context": {
+              "itemIndex": 0
+            },
+            "functionality": "regular",
+            "name": "NodeOperationError",
+            "node": {
+              "parameters": {
+                "preBuiltAgentsCalloutHttpRequest": "",
+                "curlImport": "",
+                "method": "POST",
+                "url": "={{ $('Nml - Instance Chatwoot Cached Data').item.json.instanceUrl }}/send/text",
+                "authentication": "none",
+                "provideSslCertificates": false,
+                "sendQuery": false,
+                "sendHeaders": true,
+                "specifyHeaders": "keypair",
+                "headerParameters": {
+                  "parameters": [
+                    {
+                      "name": "token",
+                      "value": "={{ $('Nml - Instance Chatwoot Cached Data').item.json.instanceToken }}"
+                    }
+                  ]
+                },
+                "sendBody": true,
+                "contentType": "json",
+                "specifyBody": "json",
+                "jsonBody": "={aaaaa\n  \"number\": \"{{ $('Nml - Inbox Event').item.json.message.chatId }}\",\n  \"text\": {{ $('Nml - Inbox Event').item.json.message.content.toJsonString() }},\n  \"readchat\": true\n  {{\n      $('Nml - Inbox Event').item.json.message.inReplyTo.isReply && \n        $('Execute a SQL query').item.json.stanza_id ? \n      ',\"replyid\": \"' + $('Execute a SQL query').item.json.stanza_id.replace('MID:','') + '\"' : ''\n  }}\n}\n\n\n",
+                "options": {},
+                "infoMessage": ""
+              },
+              "type": "n8n-nodes-base.httpRequest",
+              "typeVersion": 4.2,
+              "position": [
+                32,
+                704
+              ],
+              "id": "159bf1e1-b79a-4a66-9e9a-315d99642f6d",
+              "name": "Uazapi - Send Text"
+            },
+            "messages": [],
+            "message": "JSON parameter needs to be valid JSON",
+            "stack": "NodeOperationError: JSON parameter needs to be valid JSON\n    at ExecuteContext.execute (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/n8n-nodes-base@file+packages+nodes-base_@aws-sdk+credential-providers@3.808.0_asn1.js@5_1af219c3f47f2a1223ec4ccec249a974/node_modules/n8n-nodes-base/nodes/HttpRequest/V3/HttpRequestV3.node.ts:366:15)\n    at WorkflowExecute.runNode (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/n8n-core@file+packages+core_@opentelemetry+api@1.9.0_@opentelemetry+sdk-trace-base@1.30_0c275070fd0434c00ffd62213b2bcae4/node_modules/n8n-core/src/execution-engine/workflow-execute.ts:1212:32)\n    at /usr/local/lib/node_modules/n8n/node_modules/.pnpm/n8n-core@file+packages+core_@opentelemetry+api@1.9.0_@opentelemetry+sdk-trace-base@1.30_0c275070fd0434c00ffd62213b2bcae4/node_modules/n8n-core/src/execution-engine/workflow-execute.ts:1582:38\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at /usr/local/lib/node_modules/n8n/node_modules/.pnpm/n8n-core@file+packages+core_@opentelemetry+api@1.9.0_@opentelemetry+sdk-trace-base@1.30_0c275070fd0434c00ffd62213b2bcae4/node_modules/n8n-core/src/execution-engine/workflow-execute.ts:2158:11"
+          },
+          "lastNodeExecuted": "Uazapi - Send Text",
+          "mode": "integrated"
+        },
+        "workflow": {
+          "id": "VwuLstvzkoVWDxUK",
+          "name": "(test) MAIN - Chatwoot receptor (TOuazapi/contact)"
+        }
+      }
+    ],
+    "When Executed by Another Workflow": [
+      {
+        "executionId": 576881,
+        "chatId": "557498093382@s.whatsapp.net",
+        "stanzaId": "3EB0E25D24F6A749DD9AAF",
+        "attempt": 1
+      }
+    ]
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b780b69c87731f6ce3bc879be6a4e1433ff4eb49ccba6717e96bdd4d992b279a"
+  }
+}
