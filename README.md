@@ -1,12 +1,12 @@
 # Uazapi Chatwoot Conector - By Years In Box
 
-<div style="text-align: center;">
-  <img src="./.github/assets/Logo Years In Box.png" width="200" alt="Logo Years In Box" style="margin-right: 20px; vertical-align: middle;"/>
-  <img src="./caminho/assets/Chatwoot Logo.png" width="200" alt="Outra Logo" style="vertical-align: middle;"/>
-  <img src="./caminho/assets/n8n logo.png" width="200" alt="Outra Logo" style="vertical-align: middle;"/>
-  <img src="./caminho/assets/Redis Logo.png" width="200" alt="Outra Logo" style="vertical-align: middle;"/>
-  <img src="./caminho/assets/Uazapi Logo.png" width="200" alt="Outra Logo" style="vertical-align: middle;"/>
-  <img src="./caminho/assets/Whatsapp Logo.png" width="200" alt="Outra Logo" style="vertical-align: middle;"/>
+<div align="center">
+  <img src="./.github/assets/Logo Years In Box.png" width="150" alt="Years In Box"/>
+  <img src="./.github/assets/Chatwoot Logo.png" width="150" alt="Chatwoot"/>
+  <img src="./.github/assets/n8n logo.png" width="150" alt="n8n"/>
+  <img src="./.github/assets/Redis Logo.png" width="150" alt="Redis"/>
+  <img src="./.github/assets/Uazapi Logo.png" width="150" alt="Uazapi"/>
+  <img src="./.github/assets/Whatsapp Logo.png" width="150" alt="WhatsApp"/>
 </div>
 
 ---
