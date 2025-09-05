@@ -14,27 +14,27 @@
 ### YIB Conector - Flows do N8N para conectar a Uazapi (API não oficial do Whatsapp) ao Chatwoot
 
 ## 🚀 **Pensado para volume e escala:**
-    - ✅ **Multi-instalações e multi-accounts**: Um único setup serve múltiplas instalações e contas
-    - ✅ **Criação automática de Inbox**: Setup simplificado e automatizado
-    - ✅ **Redis em todos os processos**: Otimização máxima de desempenho 
-    - ✅ **Extremamente rápida**: Envio e recebimento de texto em menos de 1s!!
+- ✅ **Multi-instalações e multi-accounts**: Um único setup serve múltiplas instalações e contas
+- ✅ **Criação automática de Inbox**: Setup simplificado e automatizado
+- ✅ **Redis em todos os processos**: Otimização máxima de desempenho 
+- ✅ **Extremamente rápida**: Envio e recebimento de texto em menos de 1s!!
 
 ## 🤝 **Interatividade**
 - ✅ **Status de mensagem correto**: 
- - "Sent" (usuário sem sinal/rede ← Relógio)
- - "Delivered" (entregue com sucesso ← Dois checks)  
- - "Read" (lida pelo usuário ← Checks azuis)
+ 1. "Sent" (usuário sem sinal/rede ← Relógio)
+ 2. "Delivered" (entregue com sucesso ← Dois checks)  
+ 3. "Read" (lida pelo usuário ← Checks azuis)
 - ✅ **Indicador "digitando"**: Exibe para o usuário enquanto agente digita no Chatwoot
 - ✅ **Marcação bidirecional**:
- - Resposta enviada pelo Chatwoot marca mensagem corretamente no Whatsapp
- - Resposta realizada pelo WhatsApp marca mensagem corretamente no Chatwoot
+ 1. Resposta enviada pelo Chatwoot marca mensagem corretamente no Whatsapp
+ 2. Resposta realizada pelo WhatsApp marca mensagem corretamente no Chatwoot
 - ✅ **Gerenciamento de exclusões**: 
- - Mensagens apagadas pelo usuário são **marcadas** (não apagadas 🫣) no Chatwoot
- - Mensagens apagadas no Chatwoot são removidas corretamente para o usuário
+ 1. Mensagens apagadas pelo usuário são **marcadas** (não apagadas 🫣) no Chatwoot
+ 2. Mensagens apagadas no Chatwoot são removidas corretamente para o usuário
 - ✅ **Suporte completo de mídia**:
- - Envio de reações (ao responder com emoji) ou emoji normal (se enviar sem responder)
- - Recebimento de contatos (Vcard)
- - Recebimento de localização (e localização em tempo real)
+ 1. Envio de reações (ao responder com emoji) ou emoji normal (se enviar sem responder)
+ 2. Recebimento de contatos (Vcard)
+ 3. Recebimento de localização (e localização em tempo real)
 
 ## ⚡ **Fila interna**
 - ✅ **Ordem sequencial garantida**: Mensagens enviadas sequencialmente e rapidamente NUNCA chegarão fora de ordem (resolve quase que 100% **bugs do Chatwoot** envolvendo macros longas)
