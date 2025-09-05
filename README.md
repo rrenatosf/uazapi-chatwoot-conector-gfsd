@@ -14,10 +14,10 @@
 ### YIB Conector - Flows do N8N para conectar a Uazapi (API não oficial do Whatsapp) ao Chatwoot
 
 ## 🚀 **Pensado para volume e escala:**
-- ✅ **Multi-instalações e multi-accounts**: Um único setup serve múltiplas instalações e contas
-- ✅ **Criação automática de Inbox**: Setup simplificado e automatizado
-- ✅ **Redis em todos os processos**: Otimização máxima de desempenho 
-- ✅ **Extremamente rápida**: Envio e recebimento de texto em menos de 1s!!
+    - ✅ **Multi-instalações e multi-accounts**: Um único setup serve múltiplas instalações e contas
+    - ✅ **Criação automática de Inbox**: Setup simplificado e automatizado
+    - ✅ **Redis em todos os processos**: Otimização máxima de desempenho 
+    - ✅ **Extremamente rápida**: Envio e recebimento de texto em menos de 1s!!
 
 ## 🤝 **Interatividade**
 - ✅ **Status de mensagem correto**: 
